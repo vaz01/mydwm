@@ -1,18 +1,18 @@
 /* See LICENSE file for copyright and license details. */
-
+#include <X11/XF86keysym.h>
 /* appearance */
-static const unsigned int gappx     = 5;        /* gaps between windows */
-static const unsigned int borderpx  = 5;        /* border pixel of windows */
+static const unsigned int gappx     = 4;        /* gaps between windows */
+static const unsigned int borderpx  = 4;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "monospace:size=10" };
 static const char dmenufont[]       = "monospace:size=10";
-static const char col_gray1[]       = "#222222";
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
+static const char col_gray1[]       = "#222222";//background colour
+static const char col_gray2[]       = "#1d8700";//inactive window border colour
+static const char col_gray3[]       = "#bbbbbb";//font colour
+static const char col_gray4[]       = "#eeeeee";//current tag and window font colour
+static const char col_cyan[]        = "#660082";//ctop bar and active window border colour "#660082
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
@@ -46,6 +46,11 @@ static const Layout layouts[] = {
 };
 
 /* key definitions */
+static const char *brupcmd[] = { "brightnessctl", "set", "10%+", NULL };
+static const char *brdowncmd[] = { "brightnessctl", "set", "10%-", NULL };
+static const char *upvol[]      = { "/usr/bin/amixer",  "set", "Master", "5%+", NULL };
+static const char *downvol[]    = { "/usr/bin/amixer",  "set", "Master", "5%-", NULL };
+static const char *mutevol[]    = { "/usr/bin/amixerl", "set", "Master", "toggle", NULL };
 #define MODKEY Mod4Mask
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
@@ -58,7 +63,18 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *dmenucmd[] = {
+    "dmenu_run",        // The command to run
+    "-m", dmenumon,     // Other existing arguments
+    "-fn", dmenufont,
+    "-nb", col_gray1,
+    "-nf", col_gray3,
+    "-sb", col_cyan,
+    "-sf", col_gray4,
+    "-c",               // New flag: -c
+    "-l", "20",         // New flag: -l 20
+    NULL
+};
 static const char *termcmd[]  = { "st", NULL };
 
 static const Key keys[] = {
@@ -96,6 +112,11 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+  { 0,                       XF86XK_AudioLowerVolume, spawn, {.v = downvol } },
+	{ 0,                       XF86XK_AudioMute, spawn, {.v = mutevol } },
+	{ 0,                       XF86XK_AudioRaiseVolume, spawn, {.v = upvol   } },
+  { 0, XF86XK_MonBrightnessUp,  spawn,          {.v = brupcmd} },
+  { 0, XF86XK_MonBrightnessDown, spawn,          {.v = brdowncmd} },
 };
 
 /* button definitions */
