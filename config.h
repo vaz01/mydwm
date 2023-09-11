@@ -9,10 +9,10 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "monospace:size=10" };
 static const char dmenufont[]       = "monospace:size=10";
 static const char col_gray1[]       = "#222222";//background colour
-static const char col_gray2[]       = "#1d8700";//inactive window border colour
+static const char col_gray2[]       = "#217cc2";//inactive window border colour
 static const char col_gray3[]       = "#bbbbbb";//font colour
 static const char col_gray4[]       = "#eeeeee";//current tag and window font colour
-static const char col_cyan[]        = "#660082";//ctop bar and active window border colour "#660082
+static const char col_cyan[]        = "#ff6b36";//ctop bar and active window border colour "#660082
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
@@ -81,6 +81,7 @@ static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
+  { MODKEY,                       XK_s,      spawn,          SHCMD("scrot '/tmp/%F_%T_$wx$h.png' -e 'xclip -selection clipboard -target image/png -i $f'") },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
